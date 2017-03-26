@@ -1,0 +1,47 @@
+# Ignore docs files
+_gh_pages
+_site
+_build
+.sass-cache
+
+# Numerous always-ignore extensions
+*.diff
+*.err
+*.orig
+*.log
+*.rej
+*.swo
+*.swp
+*.zip
+*.gz
+*.vi
+*~
+
+# OS or Editor folders
+.DS_Store
+._*
+Thumbs.db
+.cache
+.project
+.settings
+.tmproj
+.idea
+*.esproj
+*.sublime-project
+*.sublime-workspace
+
+# Folders to ignore
+node_modules
+bower_components
+
+!a_nginx/ssl/.gitkeep
+a_nginx/ssl/*.crt
+a_nginx/ssl/*.key
+a_nginx/ssl/*.pem
+
+!a_wordpress/.gitkeep
+a_wordpress/**/*.*
+
+!a_mysql/.gitkeep
+a_mysql/**/*
+a_mysql/**/*.*

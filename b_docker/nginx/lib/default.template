@@ -1,0 +1,16 @@
+
+server {
+  listen        80;
+  listen        443 ssl http2;
+  server_name   ${SERVER_NAME};
+
+  ssl_certificate             /etc/nginx/ssl/${SERVER_NAME}.crt;
+  ssl_certificate_key         /etc/nginx/ssl/${SERVER_NAME}.key;
+
+  # Initialize Default SSL Config
+  include global/wp-ssl.conf;
+
+  # Initialize Default Wordpress Config
+  include global/wordpress.conf;
+  include global/restrictions.conf;
+}

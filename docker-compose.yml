@@ -1,0 +1,66 @@
+
+version: '2'
+
+services:
+  ## Wordpress Container
+  wordpress:
+    container_name: wordpress
+    image: wp:dev # wordpress:4.7.3-php7.1-fpm
+    volumes:
+      - ./a_wordpress:/var/www/html
+      - ./a_theme:/var/www/html/wp-content/themes/dev
+    ports:
+      - 9001:9000
+    environment:
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: pongstr
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_TABLE_PREFIX: wp
+
+  ## MySql
+  mysql:
+    container_name: mysql
+    image: mysql:latest
+    ports:
+      - 3373:3306
+    volumes:
+      - ./a_mysql/:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: pongstr
+      MYSQL_DATABASE: wordpress
+
+  ## PhpMyAdmin
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - 4474:80
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: pongstr
+
+  ## Nginx Container
+  nginx:
+    container_name: nginx
+    image: nginx:cmng
+    environment:
+      PHP_FPM_SOCK: wordpress:9000
+      SERVER_NAME: wordpress.dev
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./a_wordpress:/var/www/html
+      - ./a_nginx/ssl:/etc/nginx/ssl
+
+  ## Composer Container
+  composer:
+    container_name: Composer
+    image: composer/composer:1.1
+    restart: 'no'
+    command: install
+    volumes:
+      - ./a_wordpress:/app

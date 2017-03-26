@@ -1,0 +1,48 @@
+root   /var/www/html;
+index  index.php;
+
+# Pass all .php files onto a php-fpm/php-fcgi server.
+location ~ [^/]\.php(/|$) {
+	fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+
+	if (!-f $document_root$fastcgi_script_name) {
+		return 404;
+	}
+
+	include fastcgi_params;
+  fastcgi_index index.php;
+  fastcgi_param PATH_INFO           $fastcgi_path_info;
+  fastcgi_param PATH_TRANSLATED     $document_root$fastcgi_path_info;
+  fastcgi_param SCRIPT_FILENAME     $document_root$fastcgi_script_name;
+  fastcgi_intercept_errors          on;
+  fastcgi_pass                      ${PHP_FPM_SOCK};
+}
+
+
+# WordPress single site rules.
+# Designed to be included in any server {} block.
+
+# Security Patches
+# This section are security patches in case the client overrides
+# these values, the server re-enables it and enforce its rules
+add_header X-XSS-Protection         "1; mode=block";
+add_header X-Frame-Options          "SAMEORIGIN";
+add_header X-Content-Type-Options   "nosniff";
+
+
+# Cache Controls
+# This section sets response expiration which prevents 304 not modified
+expires           max;
+add_header        Pragma public;
+add_header        Cache-Control "public";
+access_log        off;
+
+
+# This order might seem weird - this is attempted to match last if rules below fail.
+# http://wiki.nginx.org/HttpCoreModule
+location / {
+	try_files $uri $uri/ /index.php?$args;
+}
+
+# Add trailing slash to */wp-admin requests.
+rewrite /wp-admin$ $scheme://$host$uri/ permanent;
