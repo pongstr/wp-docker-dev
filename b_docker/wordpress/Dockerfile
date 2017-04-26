@@ -1,4 +1,4 @@
-FROM wordpress:4.7.3-php7.1-fpm
+FROM wordpress:4.7.4-php7.1-fpm
 
 RUN mkdir -p /var/www/html/wp-content/themes/dev
 
